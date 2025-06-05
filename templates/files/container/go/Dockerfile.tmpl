@@ -1,0 +1,26 @@
+ARG ALPINE_VERSION=3.22
+
+FROM golang:1.24-alpine${ALPINE_VERSION} AS build
+
+WORKDIR /app
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -o ./main ./
+
+FROM alpine:${ALPINE_VERSION}
+
+ARG USER_ID
+ARG USER_NAME
+ARG GROUP_ID
+
+RUN adduser -D -u ${USER_ID} -g ${GROUP_ID} -h /home/${USER_NAME} ${USER_NAME}
+#&& apk upgrade --update-cache -a && apk add \
+#apk-name \
+#apk-name-two &&\
+#&& rm -fr /var/cache/apk/*
+
+COPY --from=build /app/main /app/main
+
+USER ${USER_NAME}
+
+#COPY entrypoint.sh /entrypoint.sh
+#ENTRYPOINT ["/entrypoint.sh"]

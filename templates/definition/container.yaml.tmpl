@@ -1,0 +1,44 @@
+runtime:
+  type: container
+  {{- if .Runtime.Container.Image }}
+  image: {{ .Runtime.Container.Image }}
+  {{- end }}
+  {{- if .Runtime.Container.ExtraHosts }}
+  extra_hosts:
+    {{- range .Runtime.Container.ExtraHosts }}
+    - "{{ . }}"
+    {{- end }}
+  {{- end }}
+  {{- if .Runtime.Container.Env }}
+  env:
+    {{- range .Runtime.Container.Env }}
+    - "{{ . }}"
+    {{- end }}
+  {{- end }}
+  build:
+    context: ./
+    args:
+      USER_ID: {{ "{{ .current_uid  }}" }}
+      GROUP_ID: {{ "{{ .current_gid }}" }}
+      USER_NAME: launchr
+  command:
+  {{- if eq .ContainerPreset "go"}}
+    - /app/main
+  {{else if eq .ContainerPreset "py"}}
+    - python3
+    - -B
+    - /action/main.py
+  {{else if eq .ContainerPreset "sh"}}
+    - sh
+    - /action/main.sh
+  {{- end }}
+  {{- if .Action.Arguments }}
+    {{- range .Action.Arguments }}
+    #- {{ printf "\"{{ .%s }}\"" .Name }}
+    {{- end }}
+  {{- end }}
+  {{- if .Action.Options }}
+    {{- range .Action.Options }}
+    #- {{ printf "\"{{ .%s }}\"" .Name }}
+    {{- end }}
+  {{- end }}

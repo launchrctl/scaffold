@@ -1,0 +1,26 @@
+FROM alpine:3.22
+
+WORKDIR /host
+ARG USER_ID
+ARG USER_NAME
+ARG GROUP_ID
+
+RUN adduser -D -u ${USER_ID} -g ${GROUP_ID} -h /home/${USER_NAME} ${USER_NAME} \
+    && chown -R ${USER_NAME}:${USER_NAME} /host \
+    && apk upgrade --update-cache -a && apk add \
+    python3 \
+    curl && \
+    rm -fr /var/cache/apk/*
+
+USER ${USER_NAME}
+
+ENV PYTHON_DIR=/home/${USER_NAME}/.python
+
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
+    source /home/${USER_NAME}/.local/bin/env && \
+    uv venv ${PYTHON_DIR} && \
+    source ${PYTHON_DIR}/bin/activate
+# uv pip install --no-cache --no-progress ...
+
+ENV VIRTUAL_ENV=$PYTHON_DIR \
+    PATH="${PYTHON_DIR}/bin:$PATH"

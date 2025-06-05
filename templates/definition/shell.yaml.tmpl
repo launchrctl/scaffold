@@ -1,0 +1,14 @@
+runtime:
+  type: shell
+{{- if .Runtime.Shell.Env }}
+  env:
+  {{- range .Runtime.Shell.Env }}
+    - {{ . }}
+  {{- end }}
+{{- end }}
+  script: |
+    date
+    pwd
+    whoami
+    env
+    {{"{{ .action_dir }}"}}/main.sh

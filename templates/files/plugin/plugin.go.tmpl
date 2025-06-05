@@ -1,0 +1,50 @@
+// Package action_runtime_plugin provides an example of creating an action
+// with the runtime type "plugin".
+// It includes a basic implementation and usage of input parameters.
+package action_runtime_plugin //nolint:revive // using underscore for better example naming
+
+import (
+	"context"
+	_ "embed"
+
+	"github.com/launchrctl/launchr"
+	"github.com/launchrctl/launchr/pkg/action"
+)
+
+// Embed action yaml file. It is later used in DiscoverActions.
+//
+//go:embed action.yaml
+var actionYaml []byte
+
+func init() {
+	launchr.RegisterPlugin(&Plugin{})
+}
+
+// Plugin is [launchr.Plugin] providing example plugin action.
+type Plugin struct{}
+
+// PluginInfo implements [launchr.Plugin] interface.
+func (p *Plugin) PluginInfo() launchr.PluginInfo {
+	return launchr.PluginInfo{}
+}
+
+// DiscoverActions implements [launchr.ActionDiscoveryPlugin] interface.
+func (p *Plugin) DiscoverActions(_ context.Context) ([]*action.Action, error) {
+	// Create the action from yaml definition.
+	a := action.NewFromYAML("example:runtime-plugin", actionYaml)
+
+	// Define the callback function for the runtime to execute the code.
+	a.SetRuntime(action.NewFnRuntime(func(_ context.Context, a *action.Action) error {
+		// Ensure the action `a` comes from the function argument.
+		// Avoid shadowing the `a` variable to preserve the correct input.
+		//input := a.Input()
+		//arg := input.Arg("arg").(string)
+		//art_optional := input.Arg("arg_optional").(string)
+		//opt_int := input.Opt("opt_int").(int)
+		//opt_bool := input.Opt("opt_bool").(bool)
+
+		launchr.Term().Printfln("Hello from go plugin action")
+		return nil
+	}))
+	return []*action.Action{a}, nil
+}
