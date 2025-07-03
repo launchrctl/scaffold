@@ -1,0 +1,38 @@
+action:
+  title: Scaffold
+  description: "Provides command to interactively generate the skeleton of new actions"
+  options:
+    - name: output
+      title: Output dir
+      description: Directory to place action to.
+      type: string
+      default: "."
+    - name: runtime
+      title: Runtime
+      description: Action runtime environment
+      type: string
+      enum: ["container", "plugin", "shell"]
+      default: "container"
+    - name: preset
+      title: Container preset
+      description: Defines list of default files for container action
+      type: string
+      enum: ["go", "py", "sh"]
+      default: "sh"
+    - name: id
+      title: ID
+      description: New action ID
+      type: string
+      default: "myaction"
+    - name: title
+      title: Title
+      description: New action title
+      type: string
+      default: "My Action"
+    - name: interactive
+      title: Interactive
+      description: Interactive mode allows to customize action definition via forms
+      type: boolean
+      default: false
+
+runtime: plugin

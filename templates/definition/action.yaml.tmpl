@@ -1,0 +1,66 @@
+{{- if and .WD (eq .Runtime.Type "container") }}working_directory: "{{ .WD }}"{{- end }}
+action:
+  title: {{ .Action.Title }}
+  {{- if .Action.Description }}
+  description: {{ .Action.Description }}
+  {{- end }}
+  {{- if .Action.Aliases }}
+  alias:
+    {{- range .Action.Aliases }}
+    - {{ . }}
+    {{- end }}
+  {{- end }}
+  {{- if .Action.Arguments }}
+  arguments:
+    {{- range .Action.Arguments }}
+    - name: {{ .Name }}
+      {{- if .Title }}
+      title: {{ .Title }}
+      {{- end }}
+      {{- if .Description }}
+      description: {{ .Description }}
+      {{- end }}
+      type: {{ .Type }}
+      {{- if .Required }}
+      required: true
+      {{- end }}
+      {{- if ne .Default nil }}
+      {{- if eq (printf "%T" .Default) "[]interface {}" }}
+      default: [{{- range $i, $v := .Default }}{{if $i}}, {{end}}{{ $v }}{{- end }}]
+      {{- else }}
+      default: {{ .Default }}
+      {{- end }}
+      {{- end }}
+      {{- if .Items }}
+      items:
+        type: {{ .Items.Type }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+  {{- if .Action.Options }}
+  options:
+    {{- range .Action.Options }}
+    - name: {{ .Name }}
+      {{- if .Title }}
+      title: {{ .Title }}
+      {{- end }}
+      {{- if .Description }}
+      description: {{ .Description }}
+      {{- end }}
+      type: {{ .Type }}
+      {{- if .Required }}
+      required: true
+      {{- end }}
+      {{- if ne .Default nil }}
+      {{- if eq (printf "%T" .Default) "[]interface {}" }}
+      default: [{{- range $i, $v := .Default }}{{if $i}}, {{end}}{{ $v }}{{- end }}]
+      {{- else }}
+      default: {{ .Default }}
+      {{- end }}
+      {{- end }}
+      {{- if .Items }}
+      items:
+        type: {{ .Items.Type }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
