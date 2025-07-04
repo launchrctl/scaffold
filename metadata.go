@@ -112,6 +112,14 @@ func (m *metadataCollector) attachInteractiveForm(values *templateValues) error 
 		),
 		huh.NewGroup(
 			huh.NewSelect[string]().
+				Title("Working directory").
+				Description("Runtime type for the action").
+				Options(
+					huh.NewOption("Actions base dir", "{{ .actions_base_dir }})"),
+					huh.NewOption("Current working dir", "{{ .current_working_dir }}"),
+				).
+				Value(&values.WD),
+			huh.NewSelect[string]().
 				Title("- Choose container files preset").
 				Options(
 					huh.NewOption("Golang", "go"),
@@ -141,14 +149,6 @@ func (m *metadataCollector) attachInteractiveForm(values *templateValues) error 
 					return nil
 				}).
 				Value(&values.ID),
-			huh.NewSelect[string]().
-				Title("Working directory").
-				Description("Runtime type for the action").
-				Options(
-					huh.NewOption("Actions base dir", "{{ .actions_base_dir }})"),
-					huh.NewOption("Current working dir", "{{ .current_working_dir }}"),
-				).
-				Value(&values.WD),
 		),
 	)
 
