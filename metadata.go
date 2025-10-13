@@ -362,7 +362,7 @@ func (m *metadataCollector) collectParameters(paramType string, params *action.P
 			}
 			// explicitly set the number as '0.0' as otherwise there will be an action definition error.
 			if param.Type == jsonschema.Number {
-				param.Default = "0.0"
+				param.Default = "0.0" //nolint:goconst
 			}
 		}
 
@@ -515,7 +515,7 @@ func castParamStrToType(v string, pdef *action.DefParameter) (any, error) {
 		}
 
 		if pdef.Items.Type == jsonschema.Number && res[i] == 0 {
-			res[i] = "0.0"
+			res[i] = "0.0" //nolint:goconst
 		}
 	}
 	return res, nil
